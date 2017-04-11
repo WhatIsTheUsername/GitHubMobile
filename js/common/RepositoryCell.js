@@ -25,11 +25,13 @@ export default class RespositoryCell extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isFavorite: this.props.projectModel.isFavorite,
+            isFavorite: this.props.projectModel.isFavorite, //是否收藏
+            //收藏的图标
             favoriteIcon: this.props.projectModel.isFavorite ? require('../../res/images/ic_star.png') : require('../../res/images/ic_unstar_transparent.png'),
         };
     }
 
+    //当props发生变化时执行，初始化render时不执行，在这个回调函数里面，你可以根据属性的变化，通过调用this.setState()来更新你的组件状态，旧的属性还是可以通过this.props来获取,这里调用更新状态是安全的，并不会触发额外的render调用
     componentWillReceiveProps(nextProps) {//当从当前页面切换走，再切换回来后
         this.setFavoriteState(nextProps.projectModel.isFavorite)
     }

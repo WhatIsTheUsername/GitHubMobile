@@ -274,22 +274,26 @@ class PopularTab extends Component {
             console.log(error);
         });
     }
-
+    //拼接url
     genFetchUrl(category) {
         return API_URL + category + QUERY_STR;
     }
 
+    //更新状态机
     updateState(dic) {
         if (!this)return;
         this.setState(dic);
     }
 
+    //加载数据
     loadData(isRefresh) {
-        this.updateState({
+        this.updateState({   //更新状态机的 isLoading  isLoadingFail
             isLoading: true,
             isLoadingFail: false,
         });
+        //获取Url
         let url = this.genFetchUrl(this.props.tabLabel);
+        //获取数据
         dataRepository.fetchRepository(url).then((wrapData)=> {
             this.items = wrapData && wrapData.items ? wrapData.items : wrapData ? wrapData : [];
             this.getFavoriteKeys();
@@ -308,6 +312,7 @@ class PopularTab extends Component {
     }
 
     onRefresh() {
+        //刷新数据
         this.loadData(true);
     }
 
@@ -336,6 +341,8 @@ class PopularTab extends Component {
             favoriteDao.removeFavoriteItem(item.id.toString());
         }
     }
+
+    //返回一行的数据
     renderRow(projectModel, sectionID, rowID) {
         let {navigator}=this.props;
         return (
@@ -345,7 +352,8 @@ class PopularTab extends Component {
                 theme={this.state.theme}
                 {...{navigator}}
                 projectModel={projectModel}
-                onFavorite={(item, isFavorite)=>this.onFavorite(item, isFavorite)}/>
+                onFavorite={(item, isFavorite)=>this.onFavorite(item, isFavorite)} 
+            />  
         );
     }
 
@@ -354,19 +362,20 @@ class PopularTab extends Component {
             <ListView
                 ref="listView"
                 style={styles.listView}
-                renderRow={(e)=>this.renderRow(e)}
-                renderFooter={()=> {
+                renderRow={(e)=>this.renderRow(e)} //每一行
+                renderFooter={()=> {                   //底部
                     return <View style={{height: 50}}/>
                 }}
                 enableEmptySections={true}
-                dataSource={this.state.dataSource}
+                dataSource={this.state.dataSource}  //数据源
                 refreshControl={
                     <RefreshControl
-                        refreshing={this.state.isLoading}
-                        onRefresh={()=>this.onRefresh()}
-                        tintColor={this.props.theme.themeColor}
-                        title="Loading..."
+                        refreshing={this.state.isLoading}  //设置指示器刷新中
+                        onRefresh={()=>this.onRefresh()}     //下拉刷新调用onRefresh()方法
+                        tintColor={this.props.theme.themeColor}  //设置加载进度指示器的颜色，iOS平台适用
+                        title="Loading..."  //iOS平台适用  设置加载进度指示器下面的标题文本信息
                         titleColor={this.props.theme.themeColor}
+                        // android平台适用  进行设置加载进去指示器的颜色，至少设置一种，最好可以设置4种
                         colors={[this.props.theme.themeColor, this.props.theme.themeColor, this.props.theme.themeColor]}
                     />}
             />;
