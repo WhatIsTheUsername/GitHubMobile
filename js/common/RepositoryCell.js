@@ -36,6 +36,7 @@ export default class RespositoryCell extends Component {
         this.setFavoriteState(nextProps.projectModel.isFavorite)
     }
 
+    //改变选中状态
     setFavoriteState(isFavorite) {
         this.props.projectModel.isFavorite = isFavorite;
         this.setState({
@@ -44,23 +45,28 @@ export default class RespositoryCell extends Component {
         })
     }
 
+    //收藏按钮点击事件
     onPressFavorite() {
-        this.setFavoriteState(!this.state.isFavorite)
+        this.setFavoriteState(!this.state.isFavorite)  
+        //传递点击事件
         this.props.onFavorite(this.props.projectModel.item, !this.state.isFavorite)
     }
 
     render() {
         let item = this.props.projectModel.item? this.props.projectModel.item:this.props.projectModel;
         let TouchableElement = TouchableHighlight;
+
+        //收藏按钮
         let favoriteButton=this.props.projectModel.item?
             <TouchableHighlight
                 style={{padding:6}}
-                onPress={()=>this.onPressFavorite()} underlayColor='transparent'>
+                onPress={()=>this.onPressFavorite()} underlayColor='transparent'>  
                 <Image
                     ref='favoriteIcon'
                     style={[{width: 22, height: 22,},this.props.theme.styles.tabBarSelectedIcon]}
                     source={this.state.favoriteIcon}/>
             </TouchableHighlight>:null;
+
         let description='<p>'+item.description+'</p>';
         return (
             <TouchableElement
@@ -68,6 +74,8 @@ export default class RespositoryCell extends Component {
                 onShowUnderlay={this.props.onHighlight}
                 underlayColor='transparent'
                 onHideUnderlay={this.props.onUnhighlight}>
+
+                
                 <View style={GlobalStyles.cell_container}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <Text style={styles.title}>
@@ -78,6 +86,9 @@ export default class RespositoryCell extends Component {
                     {/*<Text style={styles.description}>*/}
                     {/*{item.description}*/}
                     {/*</Text>*/}
+
+
+
                     <HTMLView
                         value={description}
                         onLinkPress={(url) => {
@@ -95,6 +106,8 @@ export default class RespositoryCell extends Component {
                             a:styles.description,
                         }}
                     />
+
+
                     <View style={{flexDirection: 'row', justifyContent: 'space-between',}}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
                             <Text style={styles.author}>Author: </Text>
@@ -112,6 +125,8 @@ export default class RespositoryCell extends Component {
                         {favoriteButton}
                     </View>
                 </View>
+            
+
             </TouchableElement>
         );
     }
@@ -136,4 +151,9 @@ var styles = StyleSheet.create({
         color: '#757575'
     },
 });
+
+
+
+
+
 

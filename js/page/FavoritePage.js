@@ -33,21 +33,30 @@ export default class FavoritePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            theme:this.props.theme,
-            customThemeViewVisible:false,
+            theme:this.props.theme,   //主题风格 
+            customThemeViewVisible:false,   //默认不可见
         }
     }
+
+    //render方法后只执行一次
     componentDidMount() {
+        //添加回调函数
         this.props.homeComponent.addSubscriber(this.onSubscriber);
     }
 
+    //组件卸载的时候调用
     componentWillUnmount() {
+        //移除回调函数
         this.props.homeComponent.removeSubscriber(this.onSubscriber);
     }
+
+    //底部tab按钮被点击或者theme变化时需要调用的函数，这个函数会被当做参数返回给HomePage
+   //当tab按钮被点击回调这个函数时，preTab为前一刻选中的FLAG_TAB,currentTab为当前选中的FLAG_TAB
+   //当theme变化调用时，preTab为当前选中的theme,currentTab为空
     onSubscriber = (preTab, currentTab)=> {
         var changedValues = this.props.homeComponent.changedValues;
-        if(changedValues.my.themeChange&&preTab.styles) {
-            this.setState({
+        if(changedValues.my.themeChange&&preTab.styles) {  //theme改变
+            this.setState({   
                 theme:preTab
             })
             return;

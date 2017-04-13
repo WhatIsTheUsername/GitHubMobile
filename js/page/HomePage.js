@@ -36,8 +36,16 @@ export default class HomePage extends Component {
         super(props);
         this.subscribers = [];
         this.changedValues = {
-            favorite: {popularChange: false, trendingChange: false},
-            my: {languageChange: false, keyChange: false, themeChange: false}
+            favorite: {
+                popularChange: false,  //popular收藏是否有变化
+                 trendingChange: false //trending收藏是否有变化
+                },
+            
+            my: {
+                languageChange: false,  //trending页面的内容标签是否变化
+                 keyChange: false,      //popular页面的内容标签是否变化
+                  themeChange: false    //应用主题风格是否变化
+                }
         };
         let selectedTab = this.props.selectedTab ? this.props.selectedTab : FLAG_TAB.flag_popularTab; //默认选中popular页面
         this.state = {   //状态机
@@ -51,7 +59,7 @@ export default class HomePage extends Component {
         ArrayUtils.add(this.subscribers, subscriber);
     }
 
-    //添加subscriber
+    //移除subscriber
     removeSubscriber(subscriber) {
         ArrayUtils.remove(this.subscribers, subscriber);
     }
@@ -65,6 +73,8 @@ export default class HomePage extends Component {
                 if (typeof(item) == 'function')item(this.state.selectedTab, object);
             })
         }
+
+        //重置下Change
         if(object===FLAG_TAB.flag_popularTab)this.changedValues.favorite.popularChange=false;
         if(object===FLAG_TAB.flag_trendingTab)this.changedValues.favorite.trendingChange=false;
 
@@ -97,6 +107,7 @@ export default class HomePage extends Component {
         this.subscribers.forEach((item, index, arr)=> {
             if (typeof(item) == 'function')item(theme);
         })
+        //重置下Change
         this.changedValues.my.themeChange = false;
     }
 

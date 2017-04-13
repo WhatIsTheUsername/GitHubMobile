@@ -45,6 +45,7 @@ export default class PopularPage extends Component {
         };
     }
 
+
     //render方法后只执行一次
     componentDidMount() {
         //this.props.homeComponent就是HomePage,这里调用HomePage的addSubscriber函数
@@ -59,7 +60,9 @@ export default class PopularPage extends Component {
         this.props.homeComponent.removeSubscriber(this.onSubscriber);
     }
 
-    //底部tab按钮被点击或者theme变化时需要调用的函数
+    //底部tab按钮被点击或者theme变化时需要调用的函数，这个函数会被当做参数返回给HomePage
+   //当tab按钮被点击回调这个函数时，preTab为前一刻选中的FLAG_TAB,currentTab为当前选中的FLAG_TAB
+   //当theme变化调用时，preTab为当前选中的theme,currentTab为空
     onSubscriber = (preTab, currentTab)=> {
         //获取HomePage的changeValues属性
         var changedValues = this.props.homeComponent.changedValues;
@@ -70,8 +73,9 @@ export default class PopularPage extends Component {
             })
             return;
         }
-        //如果点击的是别的tabbarItem,不做操作
+        //如果当前选中tab不是flag_popularTab,就不管
         if (currentTab != FLAG_TAB.flag_popularTab)return;
+        //如果当前选中的tab是flag_popularTab,并且key变化了
         if (FLAG_TAB.flag_popularTab === currentTab && changedValues.my.keyChange) {//从设置页面切换过来
             this.props.homeComponent.onReStart(FLAG_TAB.flag_popularTab);  //重新加载
         }
@@ -90,9 +94,12 @@ export default class PopularPage extends Component {
         });
     }
 
+    //navgator右上方的搜索按钮 和 更多按钮
     renderMoreButton() {
         return (
             <View style={{flexDirection: 'row',}}>
+
+                {/*搜索按钮*/}
                 <TouchableHighlight
                     ref='button'
                     underlayColor='transparent'
@@ -112,10 +119,13 @@ export default class PopularPage extends Component {
                         />
                     </View>
                 </TouchableHighlight>
+
+                {/*更多按钮*/}
                 {ViewUtils.getMoreButton(()=>this.refs.moreMenu.open())}
             </View>)
     }
 
+    //右上方更多按钮弹出的菜单
     renderMoreView() {
         let params = {...this.props, theme: this.state.theme,fromPage:FLAG_TAB.flag_popularTab}
         return <MoreMenu
@@ -196,6 +206,9 @@ export default class PopularPage extends Component {
 
 
 
+
+
+
 class PopularTab extends Component {
     constructor(props) {
         super(props);
@@ -220,7 +233,7 @@ class PopularTab extends Component {
             this.setState({    //设置新的theme,更新状态机
                 theme: preTab
             })
-            this.updateFavorite();//更新favoriteIcon
+            this.updateFavorite();//更新favoriteIcon的显示颜色
             return;
         }
         if (currentTab != FLAG_TAB.flag_popularTab)return;  //点击了当前对应的tab按钮，忽略
@@ -310,7 +323,8 @@ class PopularTab extends Component {
             });
         })
     }
-
+    
+    //下拉刷新事件
     onRefresh() {
         //刷新数据
         this.loadData(true);
@@ -320,6 +334,7 @@ class PopularTab extends Component {
         return this.state.dataSource.cloneWithRows(items);
     }
 
+    //cell选中事件
     onSelectRepository(projectModel) {
         var item = projectModel.item;
         this.props.navigator.push({
@@ -334,6 +349,7 @@ class PopularTab extends Component {
         });
     }
 
+    //收藏点击回调事件
     onFavorite(item, isFavorite) {//favoriteIcon单击回调函数
         if (isFavorite) {
             favoriteDao.saveFavoriteItem(item.id.toString(), JSON.stringify(item));
@@ -348,11 +364,11 @@ class PopularTab extends Component {
         return (
             <RepositoryCell
                 key={projectModel.item.id}
-                onSelect={()=>this.onSelectRepository(projectModel)}
+                onSelect={()=>this.onSelectRepository(projectModel)}  //向cell组件传递选中事件
                 theme={this.state.theme}
                 {...{navigator}}
                 projectModel={projectModel}
-                onFavorite={(item, isFavorite)=>this.onFavorite(item, isFavorite)} 
+                onFavorite={(item, isFavorite)=>this.onFavorite(item, isFavorite)}   //向cell组件传递收藏点击事件
             />  
         );
     }
