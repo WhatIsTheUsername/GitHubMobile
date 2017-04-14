@@ -126,15 +126,18 @@ class FavoriteTab extends Component {
         };
     }
 
+    //render后仅加载一次
     componentDidMount() {
         this.favoriteDao = new FavoriteDao(this.props.flag);
         this.loadData(true);
     }
 
+    //当组件收到新的props时调用，初始化render时不执行，在这个回调函数里面，可以选择和当前的props进行比较,根据属性的变化，通过调用this.setState()来更新你的组件状态，旧的属性还是可以通过this.props来获取,这里调用更新状态是安全的，并不会触发额外的render调用
     componentWillReceiveProps(nextProps) {//当从当前页面切换走，再切换回来后
         this.loadData(false);
     }
 
+    //加载数据
     loadData(isShowLoading) {
         if (isShowLoading)
             this.setState({
@@ -230,7 +233,7 @@ class FavoriteTab extends Component {
                 refreshControl={
                     <RefreshControl
                         refreshing={this.state.isLoading}
-                        onRefresh={()=>this.onRefresh()}
+                        onRefresh={()=>this.onRefresh()}  //下拉刷新事件
                         tintColor={this.props.theme.themeColor}
                         title="Loading..."
                         titleColor={this.props.theme.themeColor}

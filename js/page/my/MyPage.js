@@ -31,59 +31,64 @@ export default class MyPage extends Component {
         super(props);
         this.themeDao = new ThemeDao();
         this.state = {
-            customThemeViewVisible: false,
+            customThemeViewVisible: false, //默认情况下不可见
             theme: this.props.theme,
         }
     }
 
+    //组件渲染之后调用
     componentDidMount() {
+        //添加回调函数
         this.props.homeComponent.addSubscriber(this.onSubscriber);
     }
-
+    //组件将要移除时调用
     componentWillUnmount() {
+        //移除回调函数
         this.props.homeComponent.removeSubscriber(this.onSubscriber);
     }
 
+    //回调函数
     onSubscriber = (preTab, currentTab)=> {
         var changedValues = this.props.homeComponent.changedValues;
         if (changedValues.my.themeChange && preTab.styles) {
-            this.setState({
+            this.setState({    //theme变化
                 theme: preTab
             })
             return;
         }
     }
 
+    //对应行的点击事件
     onClick(tab) {
         let TargetComponent, params = {...this.props, theme: this.state.theme, menuType: tab};
         switch (tab) {
-            case MORE_MENU.Custom_Language:
-                TargetComponent = CustomKeyPage;
+            case MORE_MENU.Custom_Language:     //custom language
+                TargetComponent = CustomKeyPage;    
                 params.flag = FLAG_LANGUAGE.flag_language;
                 break;
-            case MORE_MENU.Custom_Key:
+            case MORE_MENU.Custom_Key:    //custom key
                 TargetComponent = CustomKeyPage;
                 params.flag = FLAG_LANGUAGE.flag_key;
                 break;
-            case MORE_MENU.Remove_Key:
+            case MORE_MENU.Remove_Key:   //remove key
                 TargetComponent = CustomKeyPage;
                 params.flag = FLAG_LANGUAGE.flag_key;
                 break;
-            case MORE_MENU.Sort_Language:
+            case MORE_MENU.Sort_Language:   //sort language
                 TargetComponent = SortKeyPagePage;
                 params.flag = FLAG_LANGUAGE.flag_language;
                 break;
-            case MORE_MENU.Sort_Key:
+            case MORE_MENU.Sort_Key:     //sort key
                 TargetComponent = SortKeyPagePage;
                 params.flag = FLAG_LANGUAGE.flag_key;
                 break;
-            case MORE_MENU.Custom_Theme:
+            case MORE_MENU.Custom_Theme:    //Custom theme
                 this.setState({customThemeViewVisible: true});
                 break;
-            case MORE_MENU.About_Author:
+            case MORE_MENU.About_Author:  // about author
                 TargetComponent = AboutMePage;
                 break;
-            case MORE_MENU.About:
+            case MORE_MENU.About:     //github popular
                 TargetComponent =AboutPage;
                 break;
 
@@ -96,6 +101,7 @@ export default class MyPage extends Component {
         }
     }
 
+    //获取到一行
     getItem(tag, icon, text) {
         return ViewUtils.getSettingItem(()=>this.onClick(tag), icon, text, this.state.theme.styles.tabBarSelectedIcon);
     }

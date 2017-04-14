@@ -29,7 +29,7 @@ export default class TrendingRepoCell extends Component {
         };
     }
 
-    //当props发生变化时执行，初始化render时不执行，在这个回调函数里面，你可以根据属性的变化，通过调用this.setState()来更新你的组件状态，旧的属性还是可以通过this.props来获取,这里调用更新状态是安全的，并不会触发额外的render调用
+    //当组件收到新的props时调用，初始化render时不执行，在这个回调函数里面，可以选择和当前的props进行比较,根据属性的变化，通过调用this.setState()来更新你的组件状态，旧的属性还是可以通过this.props来获取,这里调用更新状态是安全的，并不会触发额外的render调用
     componentWillReceiveProps(nextProps) {//当从当前页面切换走，再切换回来后
         this.setFavoriteState(nextProps.projectModel.isFavorite)
     }
